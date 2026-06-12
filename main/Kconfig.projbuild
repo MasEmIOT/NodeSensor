@@ -1,0 +1,33 @@
+menu "Node Sensor Configuration"
+
+    config NODE_ID
+        int "Node ID (1-255)"
+        range 1 255
+        default 1
+        help
+            Ma so dinh danh cua node, gateway dung lam key tren Firebase.
+
+    config NODE_SEND_INTERVAL_S
+        int "Send interval (seconds)"
+        range 2 3600
+        default 30
+
+    config LORA_FREQ_HZ
+        int "LoRa frequency (Hz)"
+        default 433000000
+        help
+            Ra-02 (SX1278) dung 433 MHz. Phai giong gateway.
+
+    config LORA_SF
+        int "LoRa spreading factor (7-12)"
+        range 7 12
+        default 9
+        help
+            SF cang lon bay cang xa nhung cang cham. Phai giong gateway.
+
+    config LORA_TX_POWER_DBM
+        int "LoRa TX power (dBm)"
+        range 2 20
+        default 17
+
+endmenu
