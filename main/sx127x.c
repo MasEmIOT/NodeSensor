@@ -2,6 +2,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
+#include "esp_timer.h"
 #include "sx127x.h"
 
 static const char *TAG = "sx127x";
@@ -265,17 +266,17 @@ esp_err_t sx127x_send(const uint8_t *data, uint8_t len, uint32_t timeout_ms)
 
     ESP_ERROR_CHECK(set_mode(MODE_TX));
 
-    /* Doi TxDone */
-    uint32_t waited = 0;
-    while (waited < timeout_ms) {
+    /* Doi TxDone - dung dong ho thuc (esp_timer) de KHONG phu thuoc tick rate */
+    int64_t t0 = esp_timer_get_time();
+    int64_t limit_us = (int64_t)timeout_ms * 1000;
+    while ((esp_timer_get_time() - t0) < limit_us) {
         uint8_t irq = 0;
         if (reg_read(REG_IRQ_FLAGS, &irq) == ESP_OK && (irq & IRQ_TX_DONE)) {
             reg_write(REG_IRQ_FLAGS, 0xFF);
             set_mode(MODE_STDBY);
             return ESP_OK;
         }
-        vTaskDelay(pdMS_TO_TICKS(5));
-        waited += 5;
+        vTaskDelay(1);                 /* nhuong CPU 1 tick, khong busy-spin */
     }
     set_mode(MODE_STDBY);
     return ESP_ERR_TIMEOUT;

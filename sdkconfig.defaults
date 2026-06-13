@@ -1,3 +1,17 @@
 CONFIG_IDF_TARGET="esp32s3"
 CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
 CONFIG_PARTITION_TABLE_SINGLE_APP_LARGE=y
+
+# Tick 1000Hz: de vTaskDelay(pdMS_TO_TICKS(<=10ms)) thuc su cho dung thoi gian
+# (mac dinh 100Hz lam tron 5ms -> 0 tick, gay loi timeout LoRa).
+CONFIG_FREERTOS_HZ=1000
+
+# Manual light-sleep (esp_light_sleep_start) khong can PM framework.
+# De PM_ENABLE=n cho don gian, tranh DFS can thiep vao SPI/I2C timing.
+CONFIG_PM_ENABLE=n
+CONFIG_FREERTOS_USE_TICKLESS_IDLE=n
+
+# Task Watchdog: bat va cho panic (reset) khi treo
+CONFIG_ESP_TASK_WDT_INIT=y
+CONFIG_ESP_TASK_WDT_TIMEOUT_S=10
+CONFIG_ESP_TASK_WDT_PANIC=y

@@ -10,7 +10,7 @@
 #include "driver/gpio.h"
 #include "driver/spi_master.h"
 
-#define SX127X_MAX_PAYLOAD  64
+#define SX127X_MAX_PAYLOAD  128   /* du cho goi ma hoa (envelope ~73 byte) */
 
 typedef struct {
     spi_host_device_t spi_host;     /* vd: SPI2_HOST */
